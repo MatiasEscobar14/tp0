@@ -45,7 +45,7 @@ int main(void)
 	// Creamos una conexión hacia el servidor
 	conexion = crear_conexion(ip, puerto);
 	if (conexion == -1) {
-		log_error(logger, "Nohttps://prod.liveshare.vsengsaas.visualstudio.com/join?B0FB2F7EF32CE20981D34C408ABFAFC6618B se pudo establecer conexión con el servidor");
+		log_error(logger, "Nose pudo establecer conexión con el servidor");
 		terminar_programa(conexion, logger, config);
 		return EXIT_FAILURE;
 	}
@@ -112,12 +112,25 @@ void paquete(int conexion)
 {
 	// Ahora toca lo divertido!
 	char* leido;
-	t_paquete* paquete;
+	t_paquete* paquete = crear_paquete();
 
 	// Leemos y esta vez agregamos las lineas al paquete
+	
+	printf("Mensaje: ");
+	
+	while((leido = readline("")) != NULL && strcmp(leido, "") != 0) {
+        // Agregar cada línea como un mensaje al paquete
+        agregar_a_paquete(paquete, leido, strlen(leido) + 1);  // +1 para el carácter nulo
+        free(leido);  // Liberar la línea leída
+        printf("> ");
+    };
+	free(leido);
 
-
+	enviar_paquete(paquete, conexion);
+	
 	// ¡No te olvides de liberar las líneas y el paquete antes de regresar!
+	eliminar_paquete(paquete);
+	
 	
 }
 
